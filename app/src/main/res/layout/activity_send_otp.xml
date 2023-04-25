@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.SendOTP">
+
+    <ImageView
+        android:id="@+id/imgBack"
+        android:layout_width="63dp"
+        android:layout_height="46dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/baseline_arrow_back_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.042"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="76dp"
+        android:fontFamily="@font/ubuntu_bold"
+        android:gravity="center"
+        android:text="You've Got Mail"
+        android:textColor="@color/black"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:gravity="center"
+        android:text="Chúng tôi đã gửi OTP tới địa chỉ email của bạn. Kiểm tra email và xác thực"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:weightSum="6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/otp1"
+            android:layout_gravity="center"
+
+            android:layout_width="67dp"
+            android:layout_height="58dp"
+            android:layout_weight="1"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/otp2"
+            android:layout_gravity="center"
+
+            android:layout_width="67dp"
+            android:layout_height="58dp"
+            android:layout_weight="1"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/otp3"
+            android:layout_gravity="center"
+
+            android:layout_width="67dp"
+            android:layout_height="58dp"
+            android:layout_weight="1"
+            android:text=""
+/>
+
+        <TextView
+            android:id="@+id/otp4"
+            android:layout_gravity="center"
+
+            android:layout_width="67dp"
+            android:layout_height="58dp"
+            android:layout_weight="1"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/otp5"
+            android:layout_gravity="center"
+
+            android:layout_width="67dp"
+            android:layout_height="58dp"
+            android:layout_weight="1"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/otp6"
+            android:layout_gravity="center"
+            android:layout_width="67dp"
+            android:layout_height="58dp"
+            android:layout_weight="1"
+            android:text=""/>
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
