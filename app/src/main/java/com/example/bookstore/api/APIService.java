@@ -15,6 +15,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface APIService {
     String BASE_URL = "http:10.0.2.2:4000";
@@ -36,4 +38,7 @@ public interface APIService {
 
     @POST("/category")
     Call<PostCatResponse> addCat(@Body Categories c);
+
+    @GET("/product/category/{cat}")
+    Call<BookList> getBookByCat(@Path("cat") String name);
 }

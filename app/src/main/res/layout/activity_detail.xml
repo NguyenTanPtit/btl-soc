@@ -149,7 +149,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
-                android:background="@drawable/custom_btn"
+                android:background="@drawable/button"
                 android:text="Add To Cart"
                 android:textAllCaps="false"
                 android:id="@+id/btn"
