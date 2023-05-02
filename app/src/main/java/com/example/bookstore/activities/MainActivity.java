@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
             @SuppressLint("NonConstantResourceId")
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int items = item.getItemId();
 
                 int itemId = item.getItemId();
                 if (itemId == bottom_home) {
