@@ -1,16 +1,19 @@
 package com.example.bookstore.models;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Book {
+public class Book implements Serializable {
     private String id;
     private String name, author, imgUrl, datePublish, description;
     private int pageNumber, buyNumber; // số trang sách và số lượng mua
-    private float rate;
+    private float rate,price;
+    private Categories cat;
     private List<Comments> comments;
 
     public Book(String id, String name, String author, String imgUrl, String datePublish,
-                String description, int pageNumber, int buyNumber, float rate, List<Comments> comments) {
+                String description, int pageNumber, int buyNumber,Categories cat, float rate,
+                float price, List<Comments> comments) {
         this.id = id;
         this.name = name;
         this.author = author;
@@ -21,10 +24,12 @@ public class Book {
         this.buyNumber = buyNumber;
         this.rate = rate;
         this.comments = comments;
+        this.price = price;
+        this.cat = cat;
     }
 
     public Book(String name, String author, String imgUrl, String datePublish, String description,
-                int pageNumber, int buyNumber, float rate, List<Comments> comments) {
+                int pageNumber, int buyNumber,Categories cat, float rate, float price, List<Comments> comments) {
         this.name = name;
         this.author = author;
         this.imgUrl = imgUrl;
@@ -34,6 +39,8 @@ public class Book {
         this.buyNumber = buyNumber;
         this.rate = rate;
         this.comments = comments;
+        this.price =price;
+        this.cat = cat;
     }
 
     public Book() {
@@ -115,7 +122,31 @@ public class Book {
         return comments;
     }
 
+    public float getPrice() {
+        return price;
+    }
+
+    public Categories getCat() {
+        return cat;
+    }
+
+    public void setCat(Categories cat) {
+        this.cat = cat;
+    }
+
+    public void setPrice(float price) {
+        this.price = price;
+    }
+
     public void setComments(List<Comments> comments) {
         this.comments = comments;
+    }
+
+    //Test
+    public Book(String name, float rate, float price, String imgUrl) {
+        this.name = name;
+        this.rate = rate;
+        this.price = price;
+        this.imgUrl = imgUrl;
     }
 }
