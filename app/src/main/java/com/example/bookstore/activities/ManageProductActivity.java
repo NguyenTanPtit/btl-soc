@@ -46,6 +46,7 @@ public class ManageProductActivity extends AppCompatActivity {
         setContentView(R.layout.activity_manage_product);
         cat.add("All");
         getData();
+        getCatList();
         initView();
     }
     private void getData(){
@@ -63,22 +64,6 @@ public class ManageProductActivity extends AppCompatActivity {
                 Toast.makeText(ManageProductActivity.this,"lỗi",Toast.LENGTH_SHORT).show();
             }
         });
-        APIService.apiService.getCart().enqueue(new Callback<GetCatResponse>() {
-            @Override
-            public void onResponse(Call<GetCatResponse> call, Response<GetCatResponse> response) {
-                GetCatResponse getCatResponse = response.body();
-                if(getCatResponse.getStatus() == 200){
-                    for (Categories categories: getCatResponse.getList()){
-                        cat.add(categories.getName());
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<GetCatResponse> call, Throwable t) {
-                Toast.makeText(ManageProductActivity.this, "Fail to connect to server", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     private void initView(){
@@ -92,7 +77,7 @@ public class ManageProductActivity extends AppCompatActivity {
             @Override
             public void onClick(int position) {
                Intent i = new Intent(ManageProductActivity.this,UpdateDeleteActivity.class);
-               i.putExtra("book",listAll.get(position));
+               i.putExtra("book",listAll.get(position).getId());
                startActivity(i);
             }
         });
@@ -130,6 +115,31 @@ public class ManageProductActivity extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getData();
+    }
+
+    private void getCatList(){
+        APIService.apiService.getCart().enqueue(new Callback<GetCatResponse>() {
+            @Override
+            public void onResponse(Call<GetCatResponse> call, Response<GetCatResponse> response) {
+                GetCatResponse getCatResponse = response.body();
+                if(getCatResponse.getStatus() == 200){
+                    for (Categories categories: getCatResponse.getList()){
+                        cat.add(categories.getName());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetCatResponse> call, Throwable t) {
+                Toast.makeText(ManageProductActivity.this, "Fail to connect to server", Toast.LENGTH_SHORT).show();
             }
         });
     }

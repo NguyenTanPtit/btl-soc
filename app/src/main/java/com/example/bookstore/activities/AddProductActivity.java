@@ -150,26 +150,27 @@ public class AddProductActivity extends AppCompatActivity {
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onAddBook();
-                APIService.apiService.addBook(book).enqueue(new Callback<AddBookResponse>() {
-                    @Override
-                    public void onResponse(Call<AddBookResponse> call, Response<AddBookResponse> response) {
-                        Log.d("json", call.toString());
-                        AddBookResponse addBookResponse = response.body();
-                        Log.d("response", String.valueOf(response.body().getStatus()));
-                        if(addBookResponse.getStatus()==200){
-                            Toast.makeText(AddProductActivity.this,"Success",Toast.LENGTH_LONG).show();
-                            Log.d("imgBook", addBookResponse.getB().getImgUrl());
-                        }else {
-                            Toast.makeText(AddProductActivity.this, "Fail", Toast.LENGTH_SHORT).show();
+                if(onAddBook()){
+                    APIService.apiService.addBook(book).enqueue(new Callback<AddBookResponse>() {
+                        @Override
+                        public void onResponse(Call<AddBookResponse> call, Response<AddBookResponse> response) {
+                            AddBookResponse addBookResponse = response.body();
+                            if(addBookResponse.getStatus()==200){
+                                Toast.makeText(AddProductActivity.this,"Success",Toast.LENGTH_LONG).show();
+                                Log.d("imgBook", addBookResponse.getB().getImgUrl());
+//                            startActivity(new Intent(AddProductActivity.this, ManageProductActivity.class));
+                                finish();
+                            }else {
+                                Toast.makeText(AddProductActivity.this, "Fail", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<AddBookResponse> call, Throwable t) {
-                        Toast.makeText(AddProductActivity.this, "Fail to connect server", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                        @Override
+                        public void onFailure(Call<AddBookResponse> call, Throwable t) {
+                            Toast.makeText(AddProductActivity.this, "Fail to connect server", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
             }
         });
 
@@ -290,34 +291,34 @@ public class AddProductActivity extends AppCompatActivity {
         }
     }
 
-    private void onAddBook(){
+    private boolean onAddBook(){
         if(book.getImgUrl()==null){
             Toast.makeText(this,"You need to add an image of book",Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
         if(name.getText().toString().isEmpty()){
             nameLayout.setError("Name is required");
-            return;
+            return false;
         }
         if(author.getText().toString().isEmpty()){
             authorLayout.setError("Author is required");
-            return;
+            return false;
         }
         if(datePublish.getText().toString().isEmpty()){
             datePublishLayout.setError("Date Publish is required");
-            return;
+            return false;
         }
         if(price.getText().toString().isEmpty()){
             priceLayout.setError("Price is required");
-            return;
+            return false;
         }
         if(pageNum.getText().toString().isEmpty()){
             pageNumberLayout.setError("Page Number is required");
-            return;
+            return false;
         }
         if(des.getText().toString().isEmpty()){
             desLayout.setError("Description is required");
-            return;
+            return false;
         }
         float bPrice = Float.parseFloat(price.getText().toString());
         int bPageNum = Integer.parseInt(pageNum.getText().toString());
@@ -336,6 +337,7 @@ public class AddProductActivity extends AppCompatActivity {
         float rate = Float.parseFloat(fmt(0f + r.nextFloat() * (5f - 0f)));
         book.setRate(rate);
         book.setBuyNumber(0);
+        return true;
     }
     @SuppressLint("DefaultLocale")
     public static String fmt(double d)
@@ -343,6 +345,6 @@ public class AddProductActivity extends AppCompatActivity {
         if(d == (long) d)
             return String.format("%d",(long)d);
         else
-            return String.format("%s",d);
+            return String.format("%.2f",d);
     }
 }
