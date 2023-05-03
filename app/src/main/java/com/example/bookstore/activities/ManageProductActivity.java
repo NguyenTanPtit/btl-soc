@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -18,6 +19,8 @@ import com.example.bookstore.adapter.RecHome1Adapter;
 import com.example.bookstore.api.APIService;
 import com.example.bookstore.models.Book;
 import com.example.bookstore.models.BookList;
+import com.example.bookstore.models.Categories;
+import com.example.bookstore.models.GetCatResponse;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -31,15 +34,19 @@ public class ManageProductActivity extends AppCompatActivity {
     private RecyclerView rec;
     private RecHome1Adapter adapter;
     private List<Book> listAll= new ArrayList<>();
+
+    private List<Book> list = new ArrayList<>();
     private Spinner spinner;
 
     private FloatingActionButton add;
-    private String [] cat = {"All","Romance","Thriller","Something"};
+    private List<String> cat = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_product);
+        cat.add("All");
         getData();
+        getCatList();
         initView();
     }
     private void getData(){
@@ -48,6 +55,7 @@ public class ManageProductActivity extends AppCompatActivity {
             public void onResponse(Call<BookList> call, Response<BookList> response) {
                 BookList b = response.body();
                 listAll = b.getList();
+                list = listAll;
                 adapter.setList(listAll);
             }
 
@@ -69,7 +77,7 @@ public class ManageProductActivity extends AppCompatActivity {
             @Override
             public void onClick(int position) {
                Intent i = new Intent(ManageProductActivity.this,UpdateDeleteActivity.class);
-               i.putExtra("book",listAll.get(position));
+               i.putExtra("book",listAll.get(position).getId());
                startActivity(i);
             }
         });
@@ -79,6 +87,59 @@ public class ManageProductActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(ManageProductActivity.this,AddProductActivity.class));
+            }
+        });
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(!cat.get(position).equals("All")){
+                    APIService.apiService.getBookByCat(cat.get(position)).enqueue(new Callback<BookList>() {
+                        @Override
+                        public void onResponse(Call<BookList> call, Response<BookList> response) {
+                            BookList b = response.body();
+                            listAll = b.getList();
+                            adapter.setList(listAll);
+                        }
+
+                        @Override
+                        public void onFailure(Call<BookList> call, Throwable t) {
+                            Toast.makeText(ManageProductActivity.this, "Fail to connect to server", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }else {
+                    adapter.setList(list);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getData();
+    }
+
+    private void getCatList(){
+        APIService.apiService.getCart().enqueue(new Callback<GetCatResponse>() {
+            @Override
+            public void onResponse(Call<GetCatResponse> call, Response<GetCatResponse> response) {
+                GetCatResponse getCatResponse = response.body();
+                if(getCatResponse.getStatus() == 200){
+                    for (Categories categories: getCatResponse.getList()){
+                        cat.add(categories.getName());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetCatResponse> call, Throwable t) {
+                Toast.makeText(ManageProductActivity.this, "Fail to connect to server", Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -4,6 +4,13 @@ public class Categories {
     private String imgUrl;
     private String name;
 
+    public Categories() {
+    }
+
+    public Categories(String name) {
+        this.name = name;
+    }
+
     public Categories(String imgUrl, String name) {
         this.imgUrl = imgUrl;
         this.name = name;

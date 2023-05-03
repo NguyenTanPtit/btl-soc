@@ -19,9 +19,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add_cat"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/white"
+        android:src="@drawable/add_icon"
+        android:tooltipText="Add Category"
+        app:borderWidth="0dp"
+        app:fabCustomSize="50dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.783"
+        app:layout_constraintStart_toEndOf="@+id/add_book_txt"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/add_book_txt">
@@ -30,20 +46,28 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
+
             <ImageView
                 android:id="@+id/add_book_img"
                 android:layout_width="150dp"
                 android:layout_height="170dp"
-                android:src="@drawable/add_image"/>
+                android:src="@drawable/add_image" />
+
+            <Spinner
+                android:id="@+id/spinner_add_book"
+                android:layout_width="200dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp" />
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/edt_add_book_name"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="350dp"
                 android:layout_height="wrap_content"
-                android:hint="Name"
                 android:layout_marginTop="10dp"
+                android:hint="Name"
                 app:boxCornerRadiusBottomEnd="10dp"
                 app:boxCornerRadiusBottomStart="10dp"
                 app:boxCornerRadiusTopEnd="10dp"
@@ -61,6 +85,7 @@
                     android:inputType="text"
                     android:maxLines="1" />
             </com.google.android.material.textfield.TextInputLayout>
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/edt_add_book_author"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -84,6 +109,7 @@
                     android:inputType="text"
                     android:maxLines="1" />
             </com.google.android.material.textfield.TextInputLayout>
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/edt_add_book_datePublish"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -103,11 +129,12 @@
                     android:id="@+id/textInput_add_book_datePublish"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:drawableEnd="@drawable/icon_calendar"
                     android:imeOptions="actionDone"
                     android:inputType="text"
-                    android:drawableEnd="@drawable/icon_calendar"
                     android:maxLines="1" />
             </com.google.android.material.textfield.TextInputLayout>
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/edt_add_book_price"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -131,6 +158,7 @@
                     android:inputType="numberDecimal"
                     android:maxLines="1" />
             </com.google.android.material.textfield.TextInputLayout>
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/edt_add_book_pageNumber"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -154,6 +182,7 @@
                     android:inputType="number"
                     android:maxLines="1" />
             </com.google.android.material.textfield.TextInputLayout>
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/edt_add_book_des"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -174,19 +203,18 @@
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
                     android:imeOptions="actionDone"
-                    android:inputType="number"
+                    android:inputType="text"
                     android:maxLines="4" />
             </com.google.android.material.textfield.TextInputLayout>
-            
+
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/add_book_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:background="@drawable/button"
                 android:text="Add"
-                android:textStyle="bold"
-                android:layout_marginBottom="10dp"
-                />
+                android:textStyle="bold" />
         </LinearLayout>
     </ScrollView>
 
