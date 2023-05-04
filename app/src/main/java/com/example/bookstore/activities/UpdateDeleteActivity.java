@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -21,12 +20,10 @@ import com.example.bookstore.models.Categories;
 import com.example.bookstore.models.GetCatResponse;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.storage.FirebaseStorage;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -46,6 +43,7 @@ public class UpdateDeleteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_delete);
+        listCat.add("Category");
 
 //        add = findViewById(R.id.add_book_btn);
 //        addCat = findViewById(R.id.add_cat);
@@ -72,7 +70,7 @@ public class UpdateDeleteActivity extends AppCompatActivity {
         update = findViewById(R.id.update_book_btn);
         delete = findViewById(R.id.delete_book_btn);
 
-        listCat.add("Category");
+
         getCat();
         spinner.setAdapter(new ArrayAdapter<>(this,R.layout.item_spinner,listCat));
 
@@ -130,7 +128,7 @@ public class UpdateDeleteActivity extends AppCompatActivity {
     }
 
     private void getCat(){
-        APIService.apiService.getCart().enqueue(new Callback<GetCatResponse>() {
+        APIService.apiService.getCat().enqueue(new Callback<GetCatResponse>() {
             @Override
             public void onResponse(Call<GetCatResponse> call, Response<GetCatResponse> response) {
                 GetCatResponse getCatResponse = response.body();
@@ -197,6 +195,7 @@ public class UpdateDeleteActivity extends AppCompatActivity {
                 AddBookResponse addBookResponse = response.body();
                 if(addBookResponse.getStatus() == 200){
                     Toast.makeText(UpdateDeleteActivity.this, "Update success", Toast.LENGTH_SHORT).show();
+                    finish();
                 }else {
                     Toast.makeText(UpdateDeleteActivity.this, "Update fail", Toast.LENGTH_SHORT).show();
                 }
@@ -215,7 +214,6 @@ public class UpdateDeleteActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 onUpdateBook();
-                finish();
             }
         });
 
@@ -228,6 +226,7 @@ public class UpdateDeleteActivity extends AppCompatActivity {
                         AddBookResponse addBookResponse = response.body();
                         if(addBookResponse.getStatus() == 200){
                             Toast.makeText(UpdateDeleteActivity.this, "Delete Success", Toast.LENGTH_SHORT).show();
+                            finish();
                         }else {
                             Toast.makeText(UpdateDeleteActivity.this, "Delete Fail", Toast.LENGTH_SHORT).show();
                         }
@@ -238,7 +237,7 @@ public class UpdateDeleteActivity extends AppCompatActivity {
                         Toast.makeText(UpdateDeleteActivity.this, "Fail to connect", Toast.LENGTH_SHORT).show();
                     }
                 });
-                finish();
+
             }
         });
     }

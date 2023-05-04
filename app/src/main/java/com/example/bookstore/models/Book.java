@@ -1,5 +1,7 @@
 package com.example.bookstore.models;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -9,6 +11,7 @@ public class Book implements Serializable {
     private int pageNumber, buyNumber; // số trang sách và số lượng mua
     private float rate,price;
     private Categories cat;
+    @SerializedName("comment")
     private List<Comments> comments;
 
     public Book(String id, String name, String author, String imgUrl, String datePublish,

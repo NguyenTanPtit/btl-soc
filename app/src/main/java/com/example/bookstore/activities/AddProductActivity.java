@@ -7,7 +7,6 @@ import androidx.appcompat.widget.AppCompatButton;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -33,7 +32,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -90,7 +88,7 @@ public class AddProductActivity extends AppCompatActivity {
         spinner = findViewById(R.id.spinner_add_book);
         storage = FirebaseStorage.getInstance();
 
-        APIService.apiService.getCart().enqueue(new Callback<GetCatResponse>() {
+        APIService.apiService.getCat().enqueue(new Callback<GetCatResponse>() {
             @Override
             public void onResponse(Call<GetCatResponse> call, Response<GetCatResponse> response) {
                 GetCatResponse getCatResponse = response.body();

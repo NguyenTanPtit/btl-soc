@@ -1,9 +1,11 @@
 package com.example.bookstore.api;
 
 import com.example.bookstore.models.AddBookResponse;
+import com.example.bookstore.models.AddCmtRequest;
 import com.example.bookstore.models.Book;
 import com.example.bookstore.models.BookList;
 import com.example.bookstore.models.Categories;
+import com.example.bookstore.models.GetCartRes;
 import com.example.bookstore.models.GetCatResponse;
 import com.example.bookstore.models.PostCatResponse;
 import com.google.gson.Gson;
@@ -36,7 +38,7 @@ public interface APIService {
     Call<AddBookResponse> addBook(@Body Book b);
 
     @GET("/category")
-    Call<GetCatResponse> getCart();
+    Call<GetCatResponse> getCat();
 
     @POST("/category")
     Call<PostCatResponse> addCat(@Body Categories c);
@@ -51,4 +53,10 @@ public interface APIService {
 
     @PUT("/product")
     Call<AddBookResponse> updateBook(@Body Book b);
+
+    @PUT("/product/comment")
+    Call<AddBookResponse> addComment(@Body AddCmtRequest addCmtRequest);
+
+    @GET("cart/{userId}")
+    Call<GetCartRes> getCart(@Path("userId")String uID);
 }
