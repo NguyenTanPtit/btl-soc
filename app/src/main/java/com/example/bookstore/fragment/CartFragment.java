@@ -1,5 +1,6 @@
 package com.example.bookstore.fragment;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.bookstore.R;
@@ -20,6 +22,7 @@ import com.example.bookstore.api.APIService;
 import com.example.bookstore.models.AddCartRes;
 import com.example.bookstore.models.DeleteCartRequest;
 import com.example.bookstore.models.GetCartRes;
+import com.example.bookstore.models.Products;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -47,19 +50,14 @@ public class CartFragment extends Fragment {
     private String mParam2;
     private RecyclerView recyclerView;
     FirebaseUser user;
+    private CartAdapter cartAdapter;
+    private TextView total;
 
     public CartFragment() {
-        // Required empty public constructor
+
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CartFragment.
-     */
+
     // TODO: Rename and change types and number of parameters
     public static CartFragment newInstance(String param1, String param2) {
         CartFragment fragment = new CartFragment();
@@ -85,7 +83,8 @@ public class CartFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_cart, container, false);
         recyclerView = view.findViewById(R.id.recyclerView);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        total = view.findViewById(R.id.tvgiatri);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
         recyclerView.setLayoutManager(linearLayoutManager);
         DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(itemDecoration);
@@ -95,42 +94,59 @@ public class CartFragment extends Fragment {
     }
     private void callApiGetProduct() {
         APIService.apiService.getCart(user.getUid()).enqueue(new Callback<GetCartRes>() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onResponse(Call<GetCartRes> call, Response<GetCartRes> response) {
-                GetCartRes getCartRes = response.body();
-                if(getCartRes.getStatus()==200){
-                    CartAdapter cartAdapter = new CartAdapter(getCartRes.getC().get(0), getContext(), position -> {
-                        List<String> dsID = new ArrayList<>();
-                        dsID.add(getCartRes.getC().get(0).getProducts().get(position).getProductId());
-                        DeleteCartRequest deleteCartRequest = new DeleteCartRequest(
-                                getCartRes.getC().get(0).getUserId(), dsID);
-                        APIService.apiService.deleteProduct(deleteCartRequest).enqueue(new Callback<AddCartRes>() {
-                            @Override
-                            public void onResponse(Call<AddCartRes> call1, Response<AddCartRes> response1) {
-                                AddCartRes addCartRes = response1.body();
-                                if(addCartRes.getStatus() == 200){
-                                    getCartRes.getC().get(0).getProducts().remove(position);
-                                }else {
-                                    Toast.makeText(getContext(), "Fail to remove!", Toast.LENGTH_SHORT).show();
-                                }
-                            }
 
-                            @Override
-                            public void onFailure(Call<AddCartRes> call1, Throwable t) {
-                                Toast.makeText(getContext(), "Fail to connect serer", Toast.LENGTH_SHORT).show();
-                            }
+                if(response.body()!=null) {
+                    GetCartRes getCartRes = response.body();
+                    if (getCartRes.getStatus() == 200) {
+                        cartAdapter = new CartAdapter(getCartRes.getC().get(0), getContext(), position -> {
+                            deleteCart(getCartRes, position);
                         });
-                    });
-                    recyclerView.setAdapter(cartAdapter);
-                    Toast.makeText(getContext(),"Success",Toast.LENGTH_LONG).show();
+                        recyclerView.setAdapter(cartAdapter);
+                        List<Products> products = getCartRes.getC().get(0).getProducts();
+                        int mTotal = 0;
+                        for (Products p : products) {
+                            mTotal += p.getProductPrice() * p.getQuantity();
+                        }
+                        total.setText("$ "+mTotal);
+//                    Toast.makeText(getContext(),"Success",Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getContext(), "Fail", Toast.LENGTH_SHORT).show();
+                    }
                 }else {
-                    Toast.makeText(getContext(), "Fail", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(),"You don't have any product", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<GetCartRes> call, Throwable t) {
 
+            }
+        });
+    }
+
+    private void deleteCart(GetCartRes getCartRes, int position){
+        List<String> dsID = new ArrayList<>();
+        dsID.add(getCartRes.getC().get(0).getProducts().get(position).getProductId());
+        DeleteCartRequest deleteCartRequest = new DeleteCartRequest(
+                getCartRes.getC().get(0).getUserId(), dsID);
+        APIService.apiService.deleteProduct(deleteCartRequest).enqueue(new Callback<AddCartRes>() {
+            @Override
+            public void onResponse(Call<AddCartRes> call, Response<AddCartRes> response1) {
+                AddCartRes addCartRes = response1.body();
+                if(addCartRes.getStatus() == 200){
+                    getCartRes.getC().get(0).getProducts().remove(position);
+                    cartAdapter.notifyDataSetChanged();
+                }else {
+                    Toast.makeText(getContext(), "Fail to remove!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AddCartRes> call1, Throwable t) {
+                Toast.makeText(getContext(), "Fail to connect serer", Toast.LENGTH_SHORT).show();
             }
         });
     }

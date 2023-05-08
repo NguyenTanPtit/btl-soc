@@ -176,7 +176,7 @@ public class Detail extends AppCompatActivity {
                 Log.d("Loi",t.toString());
             }
         });
-        Intent intent = new Intent(Detail.this, CartFragment.class);
+        Intent intent = new Intent(Detail.this, MainActivity.class);
         startActivity(intent);
     }
 }

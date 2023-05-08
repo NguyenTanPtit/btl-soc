@@ -11,6 +11,7 @@ import com.example.bookstore.models.DeleteCartRequest;
 import com.example.bookstore.models.GetCartRes;
 import com.example.bookstore.models.GetCatResponse;
 import com.example.bookstore.models.PostCatResponse;
+import com.example.bookstore.models.UpdateCartRequest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -69,4 +70,7 @@ public interface APIService {
 
     @HTTP(method = "DELETE", path = "/cart", hasBody = true)
     Call<AddCartRes> deleteProduct(@Body DeleteCartRequest ob);
+
+    @PUT("/cart")
+    Call<AddCartRes> updateCart(@Body UpdateCartRequest request);
 }
