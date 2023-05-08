@@ -2,28 +2,18 @@ package com.example.bookstore.models;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
-public class GetCartRes {
+public class AddCartRes {
     @SerializedName("data1")
-    private List<CartAll> c;
+    private CartAll c;
     @SerializedName("Status")
     private int status;
     private String message;
 
-//    public CartAll getC() {
-//        return c;
-//    }
-//
-//    public void setC(CartAll c) {
-//        this.c = c;
-//    }
-
-    public List<CartAll> getC() {
+    public CartAll getC() {
         return c;
     }
 
-    public void setC(List<CartAll> c) {
+    public void setC(CartAll c) {
         this.c = c;
     }
 
@@ -43,3 +33,4 @@ public class GetCartRes {
         this.message = message;
     }
 }
+

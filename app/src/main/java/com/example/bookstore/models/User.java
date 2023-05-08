@@ -20,7 +20,11 @@ public class User {
 
     public User() {
     }
-
+    public User(String userName, String password,String email){
+        this.userName = userName;
+        this.password = password;
+        this.email = email;
+    }
     public User(String fullName, String phoneNumber, String dateOfBirth, String country,
                 String userName, String password, String profileImgUrl, String email) {
         this.fullName = fullName;
@@ -30,6 +34,10 @@ public class User {
         this.userName = userName;
         this.password = password;
         this.profileImgUrl = profileImgUrl;
+        this.email = email;
+    }
+    public User(String fullName, String email) {
+        this.fullName = fullName;
         this.email = email;
     }
 

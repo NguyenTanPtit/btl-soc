@@ -146,11 +146,6 @@ public class HomeFragment extends Fragment {
 
     //test
     private void initData(){
-//        listCat.add(new Categories("https://www.pngall.com/wp-content/uploads/2/Romantic-PNG-File.png","romance"));
-//        listCat.add(new Categories("https://www.pngall.com/wp-content/uploads/2/Romantic-PNG-File.png","romance"));
-//        listCat.add(new Categories("https://www.pngall.com/wp-content/uploads/2/Romantic-PNG-File.png","romance"));
-//        listCat.add(new Categories("https://www.pngall.com/wp-content/uploads/2/Romantic-PNG-File.png","romance"));
-
         APIService.apiService.getCat().enqueue(new Callback<GetCatResponse>() {
             @Override
             public void onResponse(Call<GetCatResponse> call, Response<GetCatResponse> response) {

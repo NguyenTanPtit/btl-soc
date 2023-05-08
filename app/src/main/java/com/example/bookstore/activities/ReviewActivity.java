@@ -81,14 +81,14 @@ public class ReviewActivity extends AppCompatActivity {
                 if(!cmt.getText().toString().isEmpty()){
                     bComment = cmt.getText().toString();
                 }
-//                String uid = firebaseAuth.getCurrentUser().getUid();
+                String uid = firebaseAuth.getCurrentUser().getUid();
                 SimpleDateFormat s = new SimpleDateFormat("dd/MM/yyyy");
                 Calendar c = Calendar.getInstance();
                 String currentDate = s.format(c.getTime());
-                Comments comments = new Comments("oY4KKHLpFSO9brlQpxHPxJtDY493","bComment",currentDate);
-//                Intent i = getIntent();
-//                String bookID = i.getStringExtra("id");
-                AddCmtRequest addCmtRequest = new AddCmtRequest("261deb39-3454-4563-bf51-72c91ca9375f",comments);
+                Comments comments = new Comments(uid,bComment,currentDate);
+                Intent i = getIntent();
+                String bookID = i.getStringExtra("id");
+                AddCmtRequest addCmtRequest = new AddCmtRequest(bookID,comments);
                 APIService.apiService.addComment(addCmtRequest).enqueue(new Callback<AddBookResponse>() {
                     @Override
                     public void onResponse(Call<AddBookResponse> call, Response<AddBookResponse> response) {

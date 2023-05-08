@@ -1,5 +1,6 @@
 package com.example.bookstore.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -9,17 +10,26 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.bookstore.R;
 import com.example.bookstore.adapter.CommentAdapter;
 import com.example.bookstore.api.APIService;
+import com.example.bookstore.fragment.CartFragment;
 import com.example.bookstore.models.AddBookResponse;
+import com.example.bookstore.models.AddCartRes;
 import com.example.bookstore.models.Book;
+import com.example.bookstore.models.Cart;
 import com.example.bookstore.models.Comments;
+import com.example.bookstore.models.Products;
+import com.example.bookstore.models.User;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -38,10 +48,14 @@ public class Detail extends AppCompatActivity {
     TextView txtName,txtAuthor,rate,pageNum,buyNum,des,rate2,review;
     ImageView imageView, back;
     Book b;
+    Button btnAdd;
 
     private RecyclerView recCmt;
     private CommentAdapter commentAdapter;
     private List<Comments> listCmt = new ArrayList<>();
+    FirebaseDatabase db;
+    FirebaseUser user;
+    DatabaseReference reference;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,31 +63,6 @@ public class Detail extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
         initView();
         getData();
-//        FirebaseApp.initializeApp(this);
-//        String userId = "2FSO8TdnsxvRs76o8R3v"; // ID của user cần lấy dữ liệu
-//        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-//        DatabaseReference userRef = mDatabase.child("Book").child(userId);
-
-
-//        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                // Lấy dữ liệu của user và xử lý
-//                String name = dataSnapshot.child("name").getValue(String.class);
-//                String author = dataSnapshot.child("author").getValue(String.class);
-//
-//                String img = dataSnapshot.child("imgUrl").getValue(String.class);
-//                txtName.setText(name);
-//                txtAuthor.setText(author);
-//                Picasso.with(Detail.this).load(img).into(imageView);
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                // Xử lý lỗi nếu có
-//            }
-//        });
     }
 
     private void initView(){
@@ -88,15 +77,46 @@ public class Detail extends AppCompatActivity {
         review = findViewById(R.id.book_review_num);
         back = findViewById(R.id.back_btn);
         recCmt = findViewById(R.id.rec_cmt);
+        btnAdd=findViewById(R.id.btnAdd);
 
         recCmt.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
         commentAdapter = new CommentAdapter(listCmt,this);
         recCmt.setAdapter(commentAdapter);
+        db=FirebaseDatabase.getInstance();
+        user= FirebaseAuth.getInstance().getCurrentUser();
+        reference=FirebaseDatabase.getInstance().getReference("Users");
+        String UserId=user.getUid();
+        reference.child(UserId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User userprofile=snapshot.getValue(User.class);
+                if(userprofile!=null){
+                    if(userprofile.getEmail().equals("riptan2001@gmail.com")){
+                        btnAdd.setVisibility(View.GONE);
+                    }else {
+                        btnAdd.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(Detail.this, "Lỗi"+error.getMessage()+"!", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+
+
+        btnAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendCart();
             }
         });
     }
@@ -132,5 +152,31 @@ public class Detail extends AppCompatActivity {
         pageNum.setText(String.valueOf(b.getPageNumber()));
         buyNum.setText(String.valueOf(b.getBuyNumber()));
         des.setText(b.getDescription());
+    }
+    private void sendCart() {
+        String UserId=user.getUid();
+        Products product = new Products(b.getId(),b.getName(),b.getImgUrl(),b.getPrice(),1);
+        Cart cart= new Cart(UserId,product);
+
+        APIService.apiService.sendCarts(cart).enqueue(new Callback<AddCartRes>() {
+            @Override
+            public void onResponse(Call<AddCartRes> call, Response<AddCartRes> response) {
+                AddCartRes addCartRes = response.body();
+                Log.d("response", String.valueOf(response.body().getStatus()));
+                if(addCartRes.getStatus()==200){
+//                    Log.d("")
+                    Toast.makeText(Detail.this,"Success",Toast.LENGTH_LONG).show();
+                }else {
+                    Toast.makeText(Detail.this, "Fail", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AddCartRes> call, Throwable t) {
+                Log.d("Loi",t.toString());
+            }
+        });
+        Intent intent = new Intent(Detail.this, CartFragment.class);
+        startActivity(intent);
     }
 }

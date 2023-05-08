@@ -45,4 +45,27 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string-array name="Country">
+        <item>Viet Nam</item>
+        <item>Trung Quoc</item>
+        <item>Lao</item>
+        <item>Campuchia</item>
+        <item>Thai Lan</item>
+        <item>Myanmar</item>
+        <item>Nhat Ban</item>
+        <item>Han Quoc</item>
+        <item>Canada</item>
+        <item>Tay Ban Nha</item>
+        <item>Phap</item>
+        <item>Brazil</item>
+    </string-array>
 </resources>
