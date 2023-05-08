@@ -11,13 +11,6 @@ public class GetCartRes {
     private int status;
     private String message;
 
-//    public CartAll getC() {
-//        return c;
-//    }
-//
-//    public void setC(CartAll c) {
-//        this.c = c;
-//    }
 
     public List<CartAll> getC() {
         return c;
