@@ -1,5 +1,6 @@
 package com.example.bookstore.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.bookstore.R;
+import com.example.bookstore.activities.Detail;
 import com.example.bookstore.adapter.AdapterExplore;
 import com.example.bookstore.adapter.OnItemClickListener;
 import com.example.bookstore.adapter.RecHome1Adapter;
@@ -20,6 +22,7 @@ import com.example.bookstore.api.APIService;
 import com.example.bookstore.models.Book;
 import com.example.bookstore.models.BookList;
 import com.example.bookstore.models.Categories;
+import com.example.bookstore.models.GetCatResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,7 +106,9 @@ public class HomeFragment extends Fragment {
         adapter = new RecHome1Adapter(listAll, getContext(), new OnItemClickListener() {
             @Override
             public void onClick(int position) {
-
+                Intent i  = new Intent(getContext(), Detail.class);
+                i.putExtra("item",listAll.get(position).getId());
+                startActivity(i);
             }
         });
         rec1.setAdapter(adapter);
@@ -119,7 +124,9 @@ public class HomeFragment extends Fragment {
         adapterRecommend = new RecHome1Adapter(listRecommend, getContext(), new OnItemClickListener() {
             @Override
             public void onClick(int position) {
-
+                Intent i  = new Intent(getContext(), Detail.class);
+                i.putExtra("item",listRecommend.get(position).getId());
+                startActivity(i);
             }
         });
         recRecommend.setAdapter(adapterRecommend);
@@ -129,7 +136,9 @@ public class HomeFragment extends Fragment {
         adapterFavorite= new RecHome1Adapter(listFavorite, getContext(), new OnItemClickListener() {
             @Override
             public void onClick(int position) {
-
+                Intent i  = new Intent(getContext(), Detail.class);
+                i.putExtra("item",listFavorite.get(position).getId());
+                startActivity(i);
             }
         });
         recFavorite.setAdapter(adapterFavorite);
@@ -137,10 +146,24 @@ public class HomeFragment extends Fragment {
 
     //test
     private void initData(){
-        listCat.add(new Categories("https://www.pngall.com/wp-content/uploads/2/Romantic-PNG-File.png","romance"));
-        listCat.add(new Categories("https://www.pngall.com/wp-content/uploads/2/Romantic-PNG-File.png","romance"));
-        listCat.add(new Categories("https://www.pngall.com/wp-content/uploads/2/Romantic-PNG-File.png","romance"));
-        listCat.add(new Categories("https://www.pngall.com/wp-content/uploads/2/Romantic-PNG-File.png","romance"));
+        APIService.apiService.getCat().enqueue(new Callback<GetCatResponse>() {
+            @Override
+            public void onResponse(Call<GetCatResponse> call, Response<GetCatResponse> response) {
+                GetCatResponse getCatResponse = response.body();
+                if(getCatResponse.getStatus() == 200){
+                    for (Categories categories: getCatResponse.getList()){
+                        if(categories.getImgUrl()!=null){
+                            listCat.add(categories);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetCatResponse> call, Throwable t) {
+                Toast.makeText(getContext(), "Fail to connect server", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void getData(){

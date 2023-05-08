@@ -1,22 +1,26 @@
 package com.example.bookstore.models;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Comments {
-    private String id;
-    private User user;
+    private String _id;
+    @SerializedName("UserId")
+    private String userID;
     private String content;
     private String date;
 
-    public Comments(String id, User user, String content, String date) {
-        this.id = id;
-        this.user = user;
+    public Comments(String userID, String content, String date) {
+        this.userID = userID;
         this.content = content;
         this.date = date;
     }
 
-    public Comments(User user, String content, String date) {
-        this.user = user;
-        this.content = content;
-        this.date = date;
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
     }
 
     public String getDate() {
@@ -28,20 +32,13 @@ public class Comments {
     }
 
     public String getId() {
-        return id;
+        return _id;
     }
 
     public void setId(String id) {
-        this.id = id;
+        this._id = id;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 
     public String getContent() {
         return content;

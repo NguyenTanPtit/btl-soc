@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -126,7 +125,7 @@ public class ManageProductActivity extends AppCompatActivity {
     }
 
     private void getCatList(){
-        APIService.apiService.getCart().enqueue(new Callback<GetCatResponse>() {
+        APIService.apiService.getCat().enqueue(new Callback<GetCatResponse>() {
             @Override
             public void onResponse(Call<GetCatResponse> call, Response<GetCatResponse> response) {
                 GetCatResponse getCatResponse = response.body();

@@ -1,9 +1,14 @@
 package com.example.bookstore.api;
 
 import com.example.bookstore.models.AddBookResponse;
+import com.example.bookstore.models.AddCartRes;
+import com.example.bookstore.models.AddCmtRequest;
 import com.example.bookstore.models.Book;
 import com.example.bookstore.models.BookList;
+import com.example.bookstore.models.Cart;
 import com.example.bookstore.models.Categories;
+import com.example.bookstore.models.DeleteCartRequest;
+import com.example.bookstore.models.GetCartRes;
 import com.example.bookstore.models.GetCatResponse;
 import com.example.bookstore.models.PostCatResponse;
 import com.google.gson.Gson;
@@ -15,6 +20,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.HTTP;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
@@ -36,7 +42,7 @@ public interface APIService {
     Call<AddBookResponse> addBook(@Body Book b);
 
     @GET("/category")
-    Call<GetCatResponse> getCart();
+    Call<GetCatResponse> getCat();
 
     @POST("/category")
     Call<PostCatResponse> addCat(@Body Categories c);
@@ -51,4 +57,16 @@ public interface APIService {
 
     @PUT("/product")
     Call<AddBookResponse> updateBook(@Body Book b);
+
+    @PUT("/product/comment")
+    Call<AddBookResponse> addComment(@Body AddCmtRequest addCmtRequest);
+
+    @GET("cart/{userId}")
+    Call<GetCartRes> getCart(@Path("userId")String uID);
+
+    @POST("/cart")
+    Call<AddCartRes> sendCarts(@Body Cart cart);
+
+    @HTTP(method = "DELETE", path = "/cart", hasBody = true)
+    Call<AddCartRes> deleteProduct(@Body DeleteCartRequest ob);
 }

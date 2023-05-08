@@ -3,12 +3,32 @@ package com.example.bookstore.fragment;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.bookstore.R;
+import com.example.bookstore.adapter.CartAdapter;
+import com.example.bookstore.adapter.OnItemClickListener;
+import com.example.bookstore.api.APIService;
+import com.example.bookstore.models.AddCartRes;
+import com.example.bookstore.models.DeleteCartRequest;
+import com.example.bookstore.models.GetCartRes;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,6 +45,8 @@ public class CartFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private RecyclerView recyclerView;
+    FirebaseUser user;
 
     public CartFragment() {
         // Required empty public constructor
@@ -61,6 +83,55 @@ public class CartFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_cart, container, false);
+        View view = inflater.inflate(R.layout.fragment_cart, container, false);
+        recyclerView = view.findViewById(R.id.recyclerView);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
+        DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL);
+        recyclerView.addItemDecoration(itemDecoration);
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        callApiGetProduct();
+        return view;
+    }
+    private void callApiGetProduct() {
+        APIService.apiService.getCart(user.getUid()).enqueue(new Callback<GetCartRes>() {
+            @Override
+            public void onResponse(Call<GetCartRes> call, Response<GetCartRes> response) {
+                GetCartRes getCartRes = response.body();
+                if(getCartRes.getStatus()==200){
+                    CartAdapter cartAdapter = new CartAdapter(getCartRes.getC().get(0), getContext(), position -> {
+                        List<String> dsID = new ArrayList<>();
+                        dsID.add(getCartRes.getC().get(0).getProducts().get(position).getProductId());
+                        DeleteCartRequest deleteCartRequest = new DeleteCartRequest(
+                                getCartRes.getC().get(0).getUserId(), dsID);
+                        APIService.apiService.deleteProduct(deleteCartRequest).enqueue(new Callback<AddCartRes>() {
+                            @Override
+                            public void onResponse(Call<AddCartRes> call1, Response<AddCartRes> response1) {
+                                AddCartRes addCartRes = response1.body();
+                                if(addCartRes.getStatus() == 200){
+                                    getCartRes.getC().get(0).getProducts().remove(position);
+                                }else {
+                                    Toast.makeText(getContext(), "Fail to remove!", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<AddCartRes> call1, Throwable t) {
+                                Toast.makeText(getContext(), "Fail to connect serer", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    });
+                    recyclerView.setAdapter(cartAdapter);
+                    Toast.makeText(getContext(),"Success",Toast.LENGTH_LONG).show();
+                }else {
+                    Toast.makeText(getContext(), "Fail", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetCartRes> call, Throwable t) {
+
+            }
+        });
     }
 }
