@@ -1,8 +1,10 @@
 package com.example.bookstore.fragment;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,8 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.bookstore.R;
+import com.example.bookstore.activities.PlaceOrderActivity;
 import com.example.bookstore.adapter.CartAdapter;
-import com.example.bookstore.adapter.OnItemClickListener;
 import com.example.bookstore.api.APIService;
 import com.example.bookstore.models.AddCartRes;
 import com.example.bookstore.models.DeleteCartRequest;
@@ -26,6 +28,7 @@ import com.example.bookstore.models.Products;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,6 +55,10 @@ public class CartFragment extends Fragment {
     FirebaseUser user;
     private CartAdapter cartAdapter;
     private TextView total;
+
+    private List<Products> products;
+
+    private AppCompatButton buy;
 
     public CartFragment() {
 
@@ -84,15 +91,26 @@ public class CartFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_cart, container, false);
         recyclerView = view.findViewById(R.id.recyclerView);
         total = view.findViewById(R.id.tvgiatri);
+        buy = view.findViewById(R.id.buy);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
         recyclerView.setLayoutManager(linearLayoutManager);
         DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(itemDecoration);
         user = FirebaseAuth.getInstance().getCurrentUser();
         callApiGetProduct();
+
+        buy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getContext(), PlaceOrderActivity.class);
+                i.putExtra("listProduct",(Serializable)products);
+                startActivity(i);
+            }
+        });
         return view;
     }
     private void callApiGetProduct() {
+        Log.d("userID", user.getUid());
         APIService.apiService.getCart(user.getUid()).enqueue(new Callback<GetCartRes>() {
             @SuppressLint("SetTextI18n")
             @Override
@@ -101,11 +119,11 @@ public class CartFragment extends Fragment {
                 if(response.body()!=null) {
                     GetCartRes getCartRes = response.body();
                     if (getCartRes.getStatus() == 200) {
-                        cartAdapter = new CartAdapter(getCartRes.getC().get(0), getContext(), position -> {
+                        cartAdapter = new CartAdapter(getCartRes.getC(), getContext(), position -> {
                             deleteCart(getCartRes, position);
                         });
                         recyclerView.setAdapter(cartAdapter);
-                        List<Products> products = getCartRes.getC().get(0).getProducts();
+                        products = getCartRes.getC().getProducts();
                         int mTotal = 0;
                         for (Products p : products) {
                             mTotal += p.getProductPrice() * p.getQuantity();
@@ -129,15 +147,15 @@ public class CartFragment extends Fragment {
 
     private void deleteCart(GetCartRes getCartRes, int position){
         List<String> dsID = new ArrayList<>();
-        dsID.add(getCartRes.getC().get(0).getProducts().get(position).getProductId());
+        dsID.add(getCartRes.getC().getProducts().get(position).getProductId());
         DeleteCartRequest deleteCartRequest = new DeleteCartRequest(
-                getCartRes.getC().get(0).getUserId(), dsID);
+                getCartRes.getC().getUserId(), dsID);
         APIService.apiService.deleteProduct(deleteCartRequest).enqueue(new Callback<AddCartRes>() {
             @Override
             public void onResponse(Call<AddCartRes> call, Response<AddCartRes> response1) {
                 AddCartRes addCartRes = response1.body();
                 if(addCartRes.getStatus() == 200){
-                    getCartRes.getC().get(0).getProducts().remove(position);
+                    getCartRes.getC().getProducts().remove(position);
                     cartAdapter.notifyDataSetChanged();
                 }else {
                     Toast.makeText(getContext(), "Fail to remove!", Toast.LENGTH_SHORT).show();

@@ -3,12 +3,24 @@ package com.example.bookstore.fragment;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.bookstore.R;
+import com.example.bookstore.adapter.PurchaseAdapter;
+import com.example.bookstore.api.APIService;
+import com.example.bookstore.models.GetOrderResponse;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,6 +37,11 @@ public class DicoverFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private RecyclerView rec;
+    private PurchaseAdapter adapter;
+    private View root;
+
+    private FirebaseUser user;
 
     public DicoverFragment() {
         // Required empty public constructor
@@ -61,6 +78,33 @@ public class DicoverFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_dicover, container, false);
+        root = inflater.inflate(R.layout.fragment_dicover, container, false);
+        rec = root.findViewById(R.id.rec);
+        rec.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        getData();
+        return root;
+    }
+    private void getData(){
+        String uID = user.getUid();
+        APIService.apiService.getOrder(uID).enqueue(new Callback<GetOrderResponse>() {
+            @Override
+            public void onResponse(Call<GetOrderResponse> call, Response<GetOrderResponse> response) {
+                if (response.body()!=null){
+                    GetOrderResponse res = response.body();
+                    if(res.getStatus() == 200){
+                        adapter = new PurchaseAdapter(res.getList(),getContext());
+                        rec.setAdapter(adapter);
+                    }
+                }else {
+                    Toast.makeText(getContext(), "You don't have any orders yet", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetOrderResponse> call, Throwable t) {
+                Toast.makeText(getContext(), "Fail to connect", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

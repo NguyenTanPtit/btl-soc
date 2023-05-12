@@ -16,10 +16,12 @@ import com.example.bookstore.R;
 import com.example.bookstore.api.APIService;
 import com.example.bookstore.models.AddBookResponse;
 import com.example.bookstore.models.AddCmtRequest;
+import com.example.bookstore.models.Book;
 import com.example.bookstore.models.Comments;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -30,6 +32,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+@SuppressWarnings("ALL")
 public class ReviewActivity extends AppCompatActivity {
     ImageView bookCover,back;
     AppCompatButton cancel, submit;
@@ -38,6 +41,7 @@ public class ReviewActivity extends AppCompatActivity {
     TextInputEditText cmt;
     TextInputLayout layoutCmt;
     FirebaseAuth firebaseAuth;
+    Book b;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +61,11 @@ public class ReviewActivity extends AppCompatActivity {
         cancel = findViewById(R.id.btn_review_book_cancel);
         submit = findViewById(R.id.btn_review_book_submit);
         cmt = findViewById(R.id.edt_review_book_cmt);
+        Intent i = getIntent();
+        b = (Book) i.getSerializableExtra("book");
+        if(b!=null){
+            setData();
+        }
         setOnClick();
     }
 
@@ -81,6 +90,7 @@ public class ReviewActivity extends AppCompatActivity {
                 if(!cmt.getText().toString().isEmpty()){
                     bComment = cmt.getText().toString();
                 }
+
                 String uid = firebaseAuth.getCurrentUser().getUid();
                 SimpleDateFormat s = new SimpleDateFormat("dd/MM/yyyy");
                 Calendar c = Calendar.getInstance();
@@ -88,7 +98,8 @@ public class ReviewActivity extends AppCompatActivity {
                 Comments comments = new Comments(uid,bComment,currentDate);
                 Intent i = getIntent();
                 String bookID = i.getStringExtra("id");
-                AddCmtRequest addCmtRequest = new AddCmtRequest(bookID,comments);
+                Log.d("bcm", bComment);
+                AddCmtRequest addCmtRequest = new AddCmtRequest(b.getId(),comments);
                 APIService.apiService.addComment(addCmtRequest).enqueue(new Callback<AddBookResponse>() {
                     @Override
                     public void onResponse(Call<AddBookResponse> call, Response<AddBookResponse> response) {
@@ -105,5 +116,13 @@ public class ReviewActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    private void setData(){
+        Picasso.with(this).load(b.getImgUrl()).into(bookCover);
+        bookPrice.setText(String.valueOf(b.getPrice()));
+        bookAuthor.setText(b.getAuthor());
+        bookRate.setText(String.valueOf(b.getRate()));
+        bookName.setText(b.getName());
     }
 }

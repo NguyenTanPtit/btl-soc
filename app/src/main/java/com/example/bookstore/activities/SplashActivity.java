@@ -6,6 +6,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -99,10 +100,6 @@ public class SplashActivity extends AppCompatActivity {
                 task.getResult(ApiException.class);
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 if (account != null){
-//                    String Name = account.getDisplayName();
-//                    String Mail = account.getEmail();
-//                    User user = new User(Name, Mail);
-//                    databaseReference.child(account.getIdToken()).setValue(user);
                     AuthCredential authCredential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
                     // Check credential
                     firebaseAuth.signInWithCredential(authCredential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -123,6 +120,7 @@ public class SplashActivity extends AppCompatActivity {
                 }
 //                HomeActivity();
             } catch (ApiException e) {
+                Log.d("ApiException", e.getMessage());
                 Toast.makeText(this,"Error",Toast.LENGTH_LONG).show();
             }
         }

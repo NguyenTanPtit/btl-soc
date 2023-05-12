@@ -2,7 +2,9 @@ package com.example.bookstore.models;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Comments {
+import java.io.Serializable;
+
+public class Comments implements Serializable {
     private String _id;
     @SerializedName("UserId")
     private String userID;

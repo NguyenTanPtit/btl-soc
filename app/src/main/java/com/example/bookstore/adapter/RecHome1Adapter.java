@@ -38,7 +38,7 @@ public class RecHome1Adapter extends RecyclerView.Adapter<RecHome1Adapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull RecHome1Adapter.ViewHolder holder, int position) {
         Book b = list.get(position);
-        holder.price.setText(String.valueOf(b.getPrice()));
+        holder.price.setText("$"+b.getPrice());
         holder.name.setText(b.getName());
         holder.rate.setText(String.valueOf(b.getRate()));
         Picasso.with(context).load(b.getImgUrl()).into(holder.img);
