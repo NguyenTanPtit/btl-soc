@@ -46,7 +46,7 @@ import retrofit2.Response;
 
 public class Detail extends AppCompatActivity {
     TextView txtName,txtAuthor,rate,pageNum,buyNum,des,rate2,review;
-    ImageView imageView, back;
+    ImageView imageView, back, rateImg;
     Book b;
     Button btnAdd;
 
@@ -78,6 +78,7 @@ public class Detail extends AppCompatActivity {
         back = findViewById(R.id.back_btn);
         recCmt = findViewById(R.id.rec_cmt);
         btnAdd=findViewById(R.id.btnAdd);
+        rateImg = findViewById(R.id.rate);
 
         recCmt.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
         commentAdapter = new CommentAdapter(listCmt,this);
@@ -117,6 +118,14 @@ public class Detail extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 sendCart();
+            }
+        });
+        rateImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Detail.this,ReviewActivity.class);
+                i.putExtra("book", b);
+                startActivity(i);
             }
         });
     }

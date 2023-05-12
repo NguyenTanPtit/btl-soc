@@ -115,8 +115,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     }
     private void selectImage() {
         Intent intent = new Intent();
-        intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
         startActivityForResult(intent, IMAGE_REQUEST);
     }
     public void init(){

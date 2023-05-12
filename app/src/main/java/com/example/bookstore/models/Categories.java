@@ -1,6 +1,8 @@
 package com.example.bookstore.models;
 
-public class Categories {
+import java.io.Serializable;
+
+public class Categories implements Serializable {
     private String imgUrl;
     private String name;
 

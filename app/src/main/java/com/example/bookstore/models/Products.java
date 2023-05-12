@@ -1,9 +1,13 @@
 package com.example.bookstore.models;
 
-public class Products {
+import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
+
+public class Products implements Serializable {
     private String productId;
     private String productName;
-    private String productImg;
+    private String productImg,des;
     private float productPrice;
     private int quantity ;
 
@@ -13,6 +17,23 @@ public class Products {
         this.productImg = productImg;
         this.productPrice = productPrice;
         this.quantity = quantity;
+    }
+
+    public Products(String productId, String productName, String productImg, String des, float productPrice, int quantity) {
+        this.productId = productId;
+        this.productName = productName;
+        this.productImg = productImg;
+        this.des = des;
+        this.productPrice = productPrice;
+        this.quantity = quantity;
+    }
+
+    public String getDes() {
+        return des;
+    }
+
+    public void setDes(String des) {
+        this.des = des;
     }
 
     public String getProductId() {

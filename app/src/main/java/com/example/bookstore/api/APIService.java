@@ -10,6 +10,9 @@ import com.example.bookstore.models.Categories;
 import com.example.bookstore.models.DeleteCartRequest;
 import com.example.bookstore.models.GetCartRes;
 import com.example.bookstore.models.GetCatResponse;
+import com.example.bookstore.models.GetOrderResponse;
+import com.example.bookstore.models.Order;
+import com.example.bookstore.models.OrderResponse;
 import com.example.bookstore.models.PostCatResponse;
 import com.example.bookstore.models.UpdateCartRequest;
 import com.google.gson.Gson;
@@ -62,8 +65,8 @@ public interface APIService {
     @PUT("/product/comment")
     Call<AddBookResponse> addComment(@Body AddCmtRequest addCmtRequest);
 
-    @GET("cart/{userId}")
-    Call<GetCartRes> getCart(@Path("userId")String uID);
+    @GET("cart/{UserId}")
+    Call<GetCartRes> getCart(@Path("UserId")String uID);
 
     @POST("/cart")
     Call<AddCartRes> sendCarts(@Body Cart cart);
@@ -73,4 +76,10 @@ public interface APIService {
 
     @PUT("/cart")
     Call<AddCartRes> updateCart(@Body UpdateCartRequest request);
+
+    @POST("/order")
+    Call<OrderResponse> purchase(@Body Order order);
+
+    @GET("/order/{UserId}")
+    Call<GetOrderResponse> getOrder(@Path("UserId")String uID);
 }

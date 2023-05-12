@@ -4,20 +4,19 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class GetCartRes {
+public class GetOrderResponse {
     @SerializedName("data1")
-    private CartAll c;
+    private List<Order> list;
     @SerializedName("Status")
     private int status;
     private String message;
 
-
-    public CartAll getC() {
-        return c;
+    public List<Order> getList() {
+        return list;
     }
 
-    public void setC(CartAll c) {
-        this.c = c;
+    public void setList(List<Order> list) {
+        this.list = list;
     }
 
     public int getStatus() {

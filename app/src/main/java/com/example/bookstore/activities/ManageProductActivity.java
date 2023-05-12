@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -96,17 +97,22 @@ public class ManageProductActivity extends AppCompatActivity {
                     APIService.apiService.getBookByCat(cat.get(position)).enqueue(new Callback<BookList>() {
                         @Override
                         public void onResponse(Call<BookList> call, Response<BookList> response) {
-                            BookList b = response.body();
-                            listAll = b.getList();
-                            adapter.setList(listAll);
+                            if(response.body()!=null) {
+                                BookList b = response.body();
+                                listAll = b.getList();
+                                adapter.setList(listAll);
+                            }else {
+                                listAll.clear();
+                                adapter.setList(listAll);
+                            }
                         }
-
                         @Override
                         public void onFailure(Call<BookList> call, Throwable t) {
                             Toast.makeText(ManageProductActivity.this, "Fail to connect to server", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }else {
+                    Log.d("Size pro", String.valueOf(list.size()));
                     adapter.setList(list);
                 }
             }
